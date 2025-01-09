@@ -1,111 +1,62 @@
-import search from './js/pixabay-api';
+import fetchFromPxb from './js/pixabay-api.js';
+import makeMarkup from './js/render-functions.js';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
+const inputField = document.querySelector('.query');
+const marcupGallery = document.querySelector('.gallery');
+const loadingMessage = document.querySelector('.loading-message');
+
+let lightbox1 = new SimpleLightbox('.gallery .gallery-link', {
+  captionsData: '<input type="email" name="email" autofocus />', //'alt',
+  captionDelay: 250,
+  /* options */
+});
+
+function search(evt) {
+  evt.preventDefault();
+
+  if (inputField.value.trim() === '') {
+    return;
+  }
+
+  marcupGallery.innerHTML = '';
+
+  loadingMessage.classList.remove('visually-hidden');
+
+  fetchFromPxb(inputField.value)
+    .then(ans => {
+      inputField.value = '';
+      if (ans.hits.length === 0) {
+        iziToast.show({
+          messageColor: '#fff',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          timeout: 0,
+          maxWidth: '432px',
+          messageSize: '16px',
+          iconUrl: '../img/cancel-circle.svg',
+          color: '#ef4040', // blue, red, green, yellow
+          position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+        });
+        throw new Error('there are no images matching your search query');
+      }
+
+      return ans.hits;
+    })
+    .then(images => {
+      const markup = makeMarkup(images);
+
+      marcupGallery.insertAdjacentHTML('beforeend', markup);
+
+      lightbox1.refresh();
+    })
+    .catch(err => console.log(err))
+    .finally(() => loadingMessage.classList.add('visually-hidden'));
+}
 
 const form = document.querySelector('form');
 
 form.addEventListener('submit', search);
-
-// ================ ФС103, модуль 11, заняття 22 ==================
-
-// const API_KEY = '677f8f030476123f76a701ab';
-// const BASE_URL = `https://${API_KEY}.mockapi.io/api`;
-
-// function fetchBooks() {
-//   const options = {
-//     method: 'GET',
-//   };
-
-//   return fetch(`${BASE_URL}/books`, options).then(response => {
-//     if (!response.ok) {
-//       throw new Error(response.statusText); // response.statusText
-//     }
-//     return response.json();
-//   });
-// }
-
-// function fetchBookById(bookId) {
-//   const options = {
-//     method: 'GET',
-//   };
-
-//   return fetch(`${BASE_URL}/books/${bookId}`, options).then(response => {
-//     if (!response.ok) {
-//       throw new Error(response.statusText); // response.statusText
-//     }
-//     return response.json();
-//   });
-// }
-
-// function addBook(book) {
-//   const options = {
-//     method: 'POST',
-//     body: JSON.stringify(book),
-//     headers: {
-//       'Content-Type': 'application/json; charset=UTF-8',
-//     },
-//   };
-
-//   return fetch(`${BASE_URL}/books`, options).then(response => {
-//     if (!response.ok) {
-//       throw new Error(response.statusText); // response.statusText
-//     }
-//     return response.json();
-//   });
-// }
-
-// function updateBookById(update, bookId) {
-//   const options = {
-//     method: 'PUT',
-//     body: JSON.stringify(update),
-//     headers: {
-//       'Content-Type': 'application/json; charset=UTF-8',
-//     },
-//   };
-
-//   return fetch(`${BASE_URL}/books/${bookId}`, options).then(response => {
-//     if (!response.ok) {
-//       throw new Error(response.statusText); // response.statusText
-//     }
-//     return response.json();
-//   });
-// }
-
-// function deleteBook(bookId) {
-//   const options = {
-//     method: 'DELETE',
-//   };
-
-//   return fetch(`${BASE_URL}/books/${bookId}`, options).then(response => {
-//     if (!response.ok) {
-//       throw new Error(response.statusText); // response.statusText
-//     }
-//     return response.json();
-//   });
-// }
-
-// const book1 = {
-//   id: '13',
-//   titel: 'Lord of the rings III',
-//   author: 'John Tolkien',
-//   genres: ['chivalric novel', 'adventure', 'fantasy'],
-//   rating: 30,
-// };
-
-// fetchBooks()
-//   .then(data => console.log(data))
-//   .catch(err => console.log(`❌ Something went wrong: ${err}`));
-
-// fetchBookById(2)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(`❌ Something went wrong: ${err}`));
-
-// addBook(book1)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(`❌ Something went wrong: ${err}`));
-
-// updateBookById(book1, 2)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(`❌ Something went wrong: ${err}`));
-
-// deleteBook(13)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(`❌ Something went wrong: ${err}`));
