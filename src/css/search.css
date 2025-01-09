@@ -33,7 +33,6 @@
   border-radius: 8px;
   border: 0;
   padding: 8px 16px;
-  /* width: 75px; */
   height: 40px;
   background-color: #4e75ff;
   font-family: 'Montserrat', sans-serif;
@@ -54,9 +53,13 @@
 }
 
 .loading-message {
-  margin-top: 40px;
-  font-weight: 600;
-  font-size: 32px;
+  margin-top: 32px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: #2e2f42;
 }
 
 .loader-bg {
