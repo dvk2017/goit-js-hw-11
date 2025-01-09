@@ -50,7 +50,7 @@ export default function search(evt) {
           messageColor: '#fff',
           message:
             'Sorry, there are no images matching your search query. Please try again!',
-          timeout: 1000,
+          timeout: 0,
           maxWidth: '432px',
           messageSize: '16px',
           iconUrl: '../img/cancel-circle.svg',
