@@ -40,7 +40,6 @@ function search(evt) {
           icon: 'material-icons',
           iconText: 'highlight_off',
           iconColor: '#ffffff',
-          //   iconUrl: '../img/cancel-circle.svg',
           color: '#ef4040', // blue, red, green, yellow
           position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
         });
