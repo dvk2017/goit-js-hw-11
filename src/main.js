@@ -10,7 +10,7 @@ const marcupGallery = document.querySelector('.gallery');
 const loadingMessage = document.querySelector('.loading-message');
 
 let lightbox1 = new SimpleLightbox('.gallery .gallery-link', {
-  captionsData: '<input type="email" name="email" autofocus />', //'alt',
+  captionsData: 'alt', //'alt',
   captionDelay: 250,
   /* options */
 });
@@ -30,6 +30,20 @@ function search(evt) {
     .then(ans => {
       inputField.value = '';
       if (ans.hits.length === 0) {
+        throw new Error('noImagesMatching');
+      }
+
+      return ans.hits;
+    })
+    .then(images => {
+      const markup = makeMarkup(images);
+
+      marcupGallery.insertAdjacentHTML('beforeend', markup);
+
+      lightbox1.refresh();
+    })
+    .catch(err => {
+      if (err.message === 'noImagesMatching') {
         iziToast.show({
           messageColor: '#fff',
           message:
@@ -43,19 +57,23 @@ function search(evt) {
           color: '#ef4040', // blue, red, green, yellow
           position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
         });
-        throw new Error('there are no images matching your search query');
+      } else {
+        iziToast.show({
+          title: `${err}`,
+          titleColor: '#fff',
+          messageColor: '#fff',
+          message: 'Unable loading images',
+          timeout: 3000,
+          maxWidth: '432px',
+          messageSize: '16px',
+          icon: 'material-icons',
+          iconText: 'highlight_off',
+          iconColor: '#ffffff',
+          color: '#ef4040', // blue, red, green, yellow
+          position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+        });
       }
-
-      return ans.hits;
     })
-    .then(images => {
-      const markup = makeMarkup(images);
-
-      marcupGallery.insertAdjacentHTML('beforeend', markup);
-
-      lightbox1.refresh();
-    })
-    .catch(err => console.log(err))
     .finally(() => loadingMessage.classList.add('visually-hidden'));
 }
 
