@@ -15,16 +15,14 @@ let lightbox1 = new SimpleLightbox('.gallery .gallery-link', {
   /* options */
 });
 
-function search(evt) {
-  evt.preventDefault();
-
+function search() {
   if (inputField.value.trim() === '') {
     return;
   }
 
   marcupGallery.innerHTML = '';
 
-  loadingMessage.classList.remove('visually-hidden');
+  showSpinner();
 
   fetchFromPxb(inputField.value)
     .then(ans => {
@@ -74,9 +72,20 @@ function search(evt) {
         });
       }
     })
-    .finally(() => loadingMessage.classList.add('visually-hidden'));
+    .finally(() => hideSpinner());
 }
 
 const form = document.querySelector('form');
 
-form.addEventListener('submit', search);
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  search(e);
+});
+
+function showSpinner() {
+  loadingMessage.classList.remove('visually-hidden');
+}
+
+function hideSpinner() {
+  return loadingMessage.classList.add('visually-hidden');
+}
